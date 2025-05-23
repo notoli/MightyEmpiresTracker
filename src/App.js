@@ -1,8 +1,6 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const HEX_SIZE = 40;
-const WIDTH = HEX_SIZE * Math.sqrt(3);
-const HEIGHT = HEX_SIZE * 1.5;
 
 function axialToPixel(q, r) {
   const x = HEX_SIZE * 1.5 * q;
@@ -41,42 +39,54 @@ function Hex({ q, r, data, onClick }) {
 }
 
 export default function HexGrid() {
-  const rows = 10;
-  const cols = 10;
+  const rows = 5;
+  const cols = 5;
   const hexes = [];
 
-const terrainTypes = [
-  { type: "plains", color: "#aaf" },
-  { type: "forest", color: "#228B22" },
-  { type: "mountain", color: "#808080" },
-  { type: "desert", color: "#EDC9Af" },
-  { type: "water", color: "#1E90FF" },
-];
+  const terrainTypes = [
+    { type: "plains", color: "#aaf" },
+    { type: "forest", color: "#228B22" },
+    { type: "mountain", color: "#808080" },
+    { type: "desert", color: "#EDC9Af" },
+    { type: "water", color: "#1E90FF" },
+  ];
 
-for (let q = -cols / 2; q < cols / 2; q++) {
   for (let r = -rows / 2; r < rows / 2; r++) {
-    const randomTerrain = terrainTypes[Math.floor(Math.random() * terrainTypes.length)];
-    hexes.push({
-      q,
-      r,
-      ...randomTerrain,
-    });
+    for (let q = -cols / 2; q < cols / 2; q++) {
+      const randomTerrain = terrainTypes[Math.floor(Math.random() * terrainTypes.length)];
+      hexes.push({
+        q,
+        r,
+        ...randomTerrain,
+      });
+    }
   }
-}
 
-const handleHexClick = (q, r) => {
-  const hex = hexes.find(h => h.q === q && h.r === r);
-  alert(`Hex at q=${q}, r=${r}\nTerrain: ${hex.type}`);
-};
+  const handleHexClick = (q, r) => {
+    const hex = hexes.find(h => h.q === q && h.r === r);
+    alert(`Hex at q=${q}, r=${r}\nTerrain: ${hex.type}`);
+  };
 
-return (
-  <svg width="100%" height="100vh" style={{ backgroundColor: "#f0f0f0" }}>
-    <g transform="translate(50%, 50%)">
-      {hexes.map((hex, i) => (
-        <Hex key={i} q={hex.q} r={hex.r} data={hex} onClick={handleHexClick} />
-      ))}
-    </g>
-  </svg>
-);
+  const gridWidth = HEX_SIZE * 1.5 * (cols - 1) + HEX_SIZE;
+  const gridHeight = HEX_SIZE * Math.sqrt(3) * (rows + 0.5);
 
+  const [windowSize, setWindowSize] = useState({ width: 0, height: 0 });
+
+  useEffect(() => {
+    const updateSize = () =>
+      setWindowSize({ width: window.innerWidth, height: window.innerHeight });
+    updateSize();
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
+
+  return (
+    <svg width="100%" height="100%" viewBox={`0 0 ${windowSize.width} ${windowSize.height}`} style={{ backgroundColor: "#f0f0f0" }}>
+      <g transform={`translate(${windowSize.width / 2 - gridWidth / 2}, ${windowSize.height / 2 - gridHeight / 2})`}>
+        {hexes.map((hex, i) => (
+          <Hex key={i} q={hex.q} r={hex.r} data={hex} onClick={handleHexClick} />
+        ))}
+      </g>
+    </svg>
+  );
 }
