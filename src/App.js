@@ -8,13 +8,14 @@ function axialToPixel(q, r) {
   return { x, y };
 }
 
-function getHexPoints(x, y) {
+function getHexPoints(cx, cy) {
   const points = [];
   for (let i = 0; i < 6; i++) {
-    const angle = Math.PI / 6 + (Math.PI / 3) * i; // 30° offset for flat-top
-    const px = x + HEX_SIZE * Math.cos(angle);
-    const py = y + HEX_SIZE * Math.sin(angle);
-    points.push(`${px},${py}`);
+    const angleDeg = 60 * i - 30;
+    const angleRad = Math.PI / 180 * angleDeg;
+    const x = cx + HEX_SIZE * Math.cos(angleRad);
+    const y = cy + HEX_SIZE * Math.sin(angleRad);
+    points.push(`${x},${y}`);
   }
   return points.join(" ");
 }
@@ -82,7 +83,7 @@ export default function HexGrid() {
 
   return (
     <svg width="100%" height="100%" viewBox={`0 0 ${windowSize.width} ${windowSize.height}`} style={{ backgroundColor: "#f0f0f0" }}>
-      <g transform={`translate(${windowSize.width / 2 - gridWidth / 2}, ${windowSize.height / 2 - gridHeight / 2})`}>
+      <g transform={`translate(${windowSize.width / 2 - gridWidth / 2}, ${windowSize.height / 2 - gridHeight / 2 + 300})`}>
         {hexes.map((hex, i) => (
           <Hex key={i} q={hex.q} r={hex.r} data={hex} onClick={handleHexClick} />
         ))}
