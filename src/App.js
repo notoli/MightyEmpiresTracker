@@ -5,15 +5,15 @@ const WIDTH = HEX_SIZE * Math.sqrt(3);
 const HEIGHT = HEX_SIZE * 1.5;
 
 function axialToPixel(q, r) {
-  const x = HEX_SIZE * Math.sqrt(3) * (q + r / 2);
-  const y = HEX_SIZE * 1.5 * r;
+  const x = HEX_SIZE * 1.5 * q;
+  const y = HEX_SIZE * Math.sqrt(3) * (r + q / 2);
   return { x, y };
 }
 
 function getHexPoints(x, y) {
   const points = [];
   for (let i = 0; i < 6; i++) {
-    const angle = (Math.PI / 3) * i;
+    const angle = Math.PI / 6 + (Math.PI / 3) * i; // 30° offset for flat-top
     const px = x + HEX_SIZE * Math.cos(angle);
     const py = y + HEX_SIZE * Math.sin(angle);
     points.push(`${px},${py}`);
@@ -50,11 +50,14 @@ export default function HexGrid() {
     alert(`Clicked hex at q=${q}, r=${r}`);
   };
 
-  return (
-    <svg width="100%" height="100vh" style={{ backgroundColor: "#f0f0f0" }}>
+return (
+  <svg width="100%" height="100vh" style={{ backgroundColor: "#f0f0f0" }}>
+    <g transform="translate(50%, 50%)">
       {hexes.map((hex, i) => (
         <Hex key={i} q={hex.q} r={hex.r} data={hex} onClick={handleHexClick} />
       ))}
-    </svg>
-  );
+    </g>
+  </svg>
+);
+
 }
