@@ -40,11 +40,25 @@ export default function HexGrid() {
   const cols = 10;
   const hexes = [];
 
-  for (let q = -cols / 2; q < cols / 2; q++) {
-    for (let r = -rows / 2; r < rows / 2; r++) {
-      hexes.push({ q, r, color: "#aaf" });
-    }
+const terrainTypes = [
+  { type: "plains", color: "#aaf" },
+  { type: "forest", color: "#228B22" },
+  { type: "mountain", color: "#808080" },
+  { type: "desert", color: "#EDC9Af" },
+  { type: "water", color: "#1E90FF" },
+];
+
+for (let q = -cols / 2; q < cols / 2; q++) {
+  for (let r = -rows / 2; r < rows / 2; r++) {
+    const randomTerrain = terrainTypes[Math.floor(Math.random() * terrainTypes.length)];
+    hexes.push({
+      q,
+      r,
+      ...randomTerrain,
+    });
   }
+}
+
 
   const handleHexClick = (q, r) => {
     alert(`Clicked hex at q=${q}, r=${r}`);
