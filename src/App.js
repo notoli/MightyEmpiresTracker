@@ -25,13 +25,18 @@ function Hex({ q, r, data, onClick }) {
   const { x, y } = axialToPixel(q, r);
   const points = getHexPoints(x, y);
   return (
-    <polygon
-      points={points}
-      fill={data.color || "#ccc"}
-      stroke="#333"
-      strokeWidth="1"
-      onClick={() => onClick(q, r)}
-    />
+    <>
+      <polygon
+        points={points}
+        fill={data.color || "#ccc"}
+        stroke="#333"
+        strokeWidth="1"
+        onClick={() => onClick(q, r)}
+      />
+      <text x={x} y={y + 5} fontSize="10" textAnchor="middle" fill="#000">
+        {data.type}
+      </text>
+    </>
   );
 }
 
@@ -59,10 +64,10 @@ for (let q = -cols / 2; q < cols / 2; q++) {
   }
 }
 
-
-  const handleHexClick = (q, r) => {
-    alert(`Clicked hex at q=${q}, r=${r}`);
-  };
+const handleHexClick = (q, r) => {
+  const hex = hexes.find(h => h.q === q && h.r === r);
+  alert(`Hex at q=${q}, r=${r}\nTerrain: ${hex.type}`);
+};
 
 return (
   <svg width="100%" height="100vh" style={{ backgroundColor: "#f0f0f0" }}>
